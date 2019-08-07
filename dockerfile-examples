@@ -1,0 +1,50 @@
+=====================================================================================
+Example 1
+=====================================================================================
+
+# mkdir img1/ && cd img1/
+# echo "Hello World" >> index.html 
+# vim Dockerfile
+
+FROM ubuntu:latest
+MAINTAINER user
+RUN apt-get update
+RUN apt-get install -y apache2
+ADD index.html /var/www/html/
+CMD /usr/sbin/apache2ctl -D FOREGROUND
+EXPOSE 80
+
+Build a new image from that Dockerfile
+# docker build -t myserver . 
+
+# docker images
+
+# docker run -d myserver
+
+# docker ps
+
+# docker network inspect bridge
+
+# curl 172.17.0.2
+
+
+
+=====================================================================================
+Example 2
+=====================================================================================
+FROM rhel8/rhel:latest
+LABEL maintainer supiwmi
+
+RUN dnf install -y tar gzip gcc make && dnf clean all
+
+ADD http://ftpmirror.gnu.org/hello/hello-2.10.tar.gz /tmp/hello-2.10.tar.gz
+
+RUN tar xvzf /tmp/hello-2.10.tar.gz
+
+WORKDIR /opt/hello-2.10
+
+RUN ./configure
+RUN make
+RUN make install
+RUN hello -v
+ENTRYPOINT "/usr/local/bin/hello"
